@@ -1,8 +1,9 @@
 package allsort
 
 import (
-	"crypto/rand"
+	"fmt"
 	"math/rand"
+	"time"
 )
 
 // create goroutines to sort an array or slice
@@ -25,18 +26,40 @@ import (
 //  func library
 //
 
-func all(a []int) []int {
-	go quicksort(a)
-	go bubblesort(a)
-	go mergesort(a)
-	go insertionsort(a)
+// func all(a []int) ([]int, float64) {
+// 	sortMe(a)
+// }
+
+func all(a []int) {
+	sortMe(a)
+}
+
+func sortMe(unsorted []int) {
+	//var sorted [len(a)]int
+	//c := make(chan []int)
+	//start := time.Now()
+	go quicksort(unsorted)
+	go bubblesort(unsorted)
+	go mergeSort(unsorted)
+	// fmt.Println(go quicksort(unsorted))
+	// fmt.Println(go bubblesort(unsorted))
+	// fmt.Println(go mergeSort(unsorted))
+	//go insertionsort(unsorted)
+	//sorted <- c
+	//var timeLapsed float64 = time.Since(start).Seconds()
+	//return sorted, timeLapsed
 
 }
 
+// ([]int, float64)
 //https://www.golangprograms.com/golang-program-for-implementation-of-quick-sort.html
-func quicksort(a []int) []int {
+func quicksort(a []int) {
+	var timeLapsed float64
+	start := time.Now()
 	if len(a) < 2 {
-		return a
+		timeLapsed = time.Since(start).Seconds()
+		fmt.Println(a, timeLapsed)
+		//return a, timeLapsed
 	}
 
 	left, right := 0, len(a)-1
@@ -45,7 +68,7 @@ func quicksort(a []int) []int {
 
 	a[pivot], a[right] = a[right], a[pivot]
 
-	for i, _ := range a {
+	for i := range a {
 		if a[i] < a[right] {
 			a[left], a[i] = a[i], a[left]
 			left++
@@ -56,53 +79,46 @@ func quicksort(a []int) []int {
 
 	quicksort(a[:left])
 	quicksort(a[left+1:])
-
-	return a
+	timeLapsed = time.Since(start).Seconds()
+	fmt.Println(a, timeLapsed)
+	//return a, timeLapsed
 }
 
-//https://www.golangprograms.com/golang-program-for-implementation-of-bubble-sort.html
-func bubblesort(items []int) {
-	var (
-		n      = len(items)
-		sorted = false
-	)
-	for !sorted {
-		swapped := false
-		for i := 0; i < n-1; i++ {
-			if items[i] > items[i+1] {
-				items[i+1], items[i] = items[i], items[i+1]
-				swapped = true
+// https://www.golangprograms.com/golang-program-for-implementation-of-bubble-sort.html
+// https://medium.com/@houzier.saurav/merge-sort-golang-14a5e4f04f00#:~:text=Bubble%20Sort%20is%20the%20simplest,and%20swaps%20since%205%20%3E%201.
+func bubblesort(numbers []int) {
+	var timeLapsed float64
+	start := time.Now()
+	for i := len(numbers); i > 0; i-- {
+		for j := 1; j < i; j++ {
+			if numbers[j-1] > numbers[j] {
+				intermediate := numbers[j]
+				numbers[j] = numbers[j-1]
+				numbers[j-1] = intermediate
 			}
 		}
-		if !swapped {
-			sorted = true
-		}
-		n = n - 1
 	}
+	timeLapsed = time.Since(start).Seconds()
+	fmt.Println(numbers, timeLapsed)
+	//return numbers, timeLapsed
 }
 
-// func main() {
-
-//     slice := generateSlice(20)
-//     fmt.Println("\n--- Unsorted --- \n\n", slice)
-//     fmt.Println("\n--- Sorted ---\n\n", mergeSort(slice), "\n")
-// }
-
-// Generates a slice of size, size filled with random numbers
-// func generateSlice(size int) []int {
-
-//     slice := make([]int, size, size)
-//     rand.Seed(time.Now().UnixNano())
-//     for i := 0; i < size; i++ {
-//         slice[i] = rand.Intn(999) - rand.Intn(999)
-//     }
-//     return slice
-// }
+func mergeAlgorithm(a []int) {
+	var timeLapsed float64
+	start := time.Now()
+	var sorted = mergeSort(a)
+	timeLapsed = time.Since(start).Seconds()
+	fmt.Println(sorted, timeLapsed)
+	//fmt.Println(sorted, timeLapsed)
+	//return sorted, timeLapsed
+}
 
 func mergeSort(items []int) []int {
+
 	var num = len(items)
 
 	if num == 1 {
+		//timeLapsed = time.Since(start).Seconds()
 		return items
 	}
 
@@ -118,8 +134,9 @@ func mergeSort(items []int) []int {
 			right[i-middle] = items[i]
 		}
 	}
-
-	return merge(mergeSort(left), mergeSort(right))
+	var sorted []int = merge(mergeSort(left), mergeSort(right))
+	//timeLapsed = time.Since(start).Seconds()
+	return sorted
 }
 
 // https://www.golangprograms.com/golang-program-for-implementation-of-mergesort.html
@@ -146,20 +163,21 @@ func merge(left, right []int) (result []int) {
 		result[i] = right[j]
 		i++
 	}
-
 	return
 }
 
 // https://www.golangprograms.com/golang-program-for-implementation-of-insertionsort.html
-func insertionsort(items []int) {
-	var n = len(items)
-	for i := 1; i < n; i++ {
-		j := i
-		for j > 0 {
-			if items[j-1] > items[j] {
-				items[j-1], items[j] = items[j], items[j-1]
-			}
-			j = j - 1
-		}
-	}
-}
+// func insertionsort(items []int)  {
+// 	start := time.Now()
+// 	var n = len(items)
+// 	for i := 1; i < n; i++ {
+// 		j := i
+// 		for j > 0 {
+// 			if items[j-1] > items[j] {
+// 				items[j-1], items[j] = items[j], items[j-1]
+// 			}
+// 			j = j - 1
+// 		}
+// 	}
+// 	var timeLapsed float64 = time.Since(start).Seconds()
+// }
