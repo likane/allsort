@@ -181,3 +181,161 @@ func merge(left, right []int) (result []int) {
 // 	}
 // 	var timeLapsed float64 = time.Since(start).Seconds()
 // }
+
+
+
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func main() {
+	fmt.Println("Hello, playground")
+	sortme := []int{60,56,38,42,87,31,5,54,10,88,97,95,6,13,52,12,98,10,90,12,42,46,87,29,22,98,8,66,64,12,66,17,57,40,46,76,16,16,43,43,22,80,50,45,55,48,24,91,78,75,47,95,28,55,12,57,83,38,34,77,28,46,28,68,11,44,43,95,43,22,57,86,72,53,72,53,71,29,81,82,52,85,88,12,47,17,4,20,53,65,10,98,58,42,11,1,12,6,82,5}
+	all(sortme)
+}
+
+func all(a []int) {
+	c1 := make(chan []int)
+	c2 := make(chan []int)
+	c3 := make(chan []int)
+	//sorted := []int{}
+	//sorted2 := []int{}
+	//sorted3 := []int{}
+	var timeLapsed int64
+	start := time.Now()
+	
+	//a2 := append([]int(nil), a...)
+	//a3 := append([]int(nil), a...)
+	//go quicksort(a, c1)
+	//go mergeSort(a, c1)
+	go doQuick(a, c1)
+	go bubblesort(a, c2)
+	go doMerge(a, c3)
+	
+	//for {
+		
+	//}
+	
+	sorted := <- c1
+	sorted2 := <- c2
+	sorted3 := <- c3
+	
+	//fmt.Println(a)
+	fmt.Println(sorted)
+	fmt.Println(sorted2)
+	fmt.Println(sorted3)
+	//fmt.Println(a)
+	timeLapsed = time.Since(start).Nanoseconds()
+	fmt.Println(timeLapsed)
+}
+ 
+func doQuick(a []int, c1 chan []int) {
+	quicksort(a)
+	c1 <- a
+}
+
+func quicksort(a []int) ([]int) {
+	//fmt.Println("qs")
+	
+	if len(a) < 2 {
+		return a	
+	}
+
+	left, right := 0, len(a)-1
+
+	pivot := rand.Int() % len(a)
+
+	a[pivot], a[right] = a[right], a[pivot]
+
+	for i := range a {
+		if a[i] < a[right] {
+			a[left], a[i] = a[i], a[left]
+			left++
+		}
+	}
+
+	a[left], a[right] = a[right], a[left]
+
+	quicksort(a[:left])
+	quicksort(a[left+1:])
+	
+	return a	
+}
+
+func bubblesort(numbers []int, c2 chan []int) {
+	for i := len(numbers); i > 0; i-- {
+		for j := 1; j < i; j++ {
+			if numbers[j-1] > numbers[j] {
+				intermediate := numbers[j]
+				numbers[j] = numbers[j-1]
+				numbers[j-1] = intermediate
+			}
+		}
+	}
+	
+	c2 <- numbers
+	//return numbers
+}
+
+func doMerge(a []int, c3 chan []int) {
+	mergeSort(a)
+	c3 <- a
+}
+
+//([]int)
+func mergeSort(items []int) ([]int)  {
+
+	var num = len(items)
+
+	if num == 1 {
+		
+		return items
+	}
+
+	middle := int(num / 2)
+	var (
+		left  = make([]int, middle)
+		right = make([]int, num-middle)
+	)
+	for i := 0; i < num; i++ {
+		if i < middle {
+			left[i] = items[i]
+		} else {
+			right[i-middle] = items[i]
+		}
+	}
+	var sorted []int = merge(mergeSort(left), mergeSort(right))
+	return sorted
+}
+
+func merge(left, right []int) (result []int) {
+	result = make([]int, len(left)+len(right))
+
+	i := 0
+	for len(left) > 0 && len(right) > 0 {
+		if left[0] < right[0] {
+			result[i] = left[0]
+			left = left[1:]
+		} else {
+			result[i] = right[0]
+			right = right[1:]
+		}
+		i++
+	}
+
+	for j := 0; j < len(left); j++ {
+		result[i] = left[j]
+		i++
+	}
+	for j := 0; j < len(right); j++ {
+		result[i] = right[j]
+		i++
+	}
+	return
+}
+
+
