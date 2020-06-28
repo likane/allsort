@@ -167,20 +167,20 @@ func merge(left, right []int) (result []int) {
 }
 
 // https://www.golangprograms.com/golang-program-for-implementation-of-insertionsort.html
-// func insertionsort(items []int)  {
-// 	start := time.Now()
-// 	var n = len(items)
-// 	for i := 1; i < n; i++ {
-// 		j := i
-// 		for j > 0 {
-// 			if items[j-1] > items[j] {
-// 				items[j-1], items[j] = items[j], items[j-1]
-// 			}
-// 			j = j - 1
-// 		}
-// 	}
-// 	var timeLapsed float64 = time.Since(start).Seconds()
-// }
+func insertionsort(items []int)  {
+	start := time.Now()
+	var n = len(items)
+	for i := 1; i < n; i++ {
+		j := i
+		for j > 0 {
+			if items[j-1] > items[j] {
+				items[j-1], items[j] = items[j], items[j-1]
+			}
+			j = j - 1
+		}
+	}
+	var timeLapsed float64 = time.Since(start).Seconds()
+}
 
 
 
@@ -194,43 +194,39 @@ import (
 
 func main() {
 	fmt.Println("Hello, playground")
-	sortme := []int{60,56,38,42,87,31,5,54,10,88,97,95,6,13,52,12,98,10,90,12,42,46,87,29,22,98,8,66,64,12,66,17,57,40,46,76,16,16,43,43,22,80,50,45,55,48,24,91,78,75,47,95,28,55,12,57,83,38,34,77,28,46,28,68,11,44,43,95,43,22,57,86,72,53,72,53,71,29,81,82,52,85,88,12,47,17,4,20,53,65,10,98,58,42,11,1,12,6,82,5}
+	sortme := []int{60,56,38,42,87,31,5,54,10,88,97,95,6,13,52,12,98,10,90,12,42,46,87,29,22,98,8,66,64,12,66,17,57,40,46,76,16,16,43,43,22,80,5,54,10,88,97,95,6,13,52,12,98,10,90,12,42,46,87,29,22,98,8,66,64,12,66,17,57,40,46,76,16,16,43,43,22,80,50,45,55,48,24,91,78,75,47,95,28,55,12,57,83,38,34,77,28,46,28,68,11,44,43,95,50,45,55,48,24,91,78,75,47,95,28,55,12,57,83,38,34,77,28,46,28,68,11,44,43,95,43,22,57,40,46,76,16,16,43,43,22,80,50,45,55,48,24,91,78,75,47,95,28,55,12,57,86,72,53,72,53,71,29,81,82,52,85,88,12,47,8,66,64,12,66,17,57,40,46,76,16,16,43,43,22,80,50,45,55,48,24,91,78,75,47,95,28,55,12,57,83,38,34,77,28,46,28,68,11,44,43,95,17,4,20,53,65,10,98,58,42,11,1,12,6,82,5}
 	all(sortme)
 }
 
-func all(a []int) {
+func all(sortme []int) {
 	c1 := make(chan []int)
 	c2 := make(chan []int)
 	c3 := make(chan []int)
+	c4 := make(chan []int)
 	//sorted := []int{}
 	//sorted2 := []int{}
 	//sorted3 := []int{}
-	var timeLapsed int64
+	//var timeLapsed int64
 	start := time.Now()
 	
-	//a2 := append([]int(nil), a...)
-	//a3 := append([]int(nil), a...)
-	//go quicksort(a, c1)
-	//go mergeSort(a, c1)
-	go doQuick(a, c1)
-	go bubblesort(a, c2)
-	go doMerge(a, c3)
-	
-	//for {
-		
-	//}
+	go doQuick(sortme, c1)
+	go bubblesort(sortme, c2)
+	go doMerge(sortme, c3)
+	go doInstertion(sortme, c4)
 	
 	sorted := <- c1
 	sorted2 := <- c2
 	sorted3 := <- c3
+	sorted4 := <- c4
 	
-	//fmt.Println(a)
 	fmt.Println(sorted)
+	//fmt.Println(sorted1)
 	fmt.Println(sorted2)
 	fmt.Println(sorted3)
-	//fmt.Println(a)
-	timeLapsed = time.Since(start).Nanoseconds()
-	fmt.Println(timeLapsed)
+	fmt.Println(sorted4)
+	fmt.Println(time.Since(start))
+	
+	
 }
  
 func doQuick(a []int, c1 chan []int) {
@@ -337,5 +333,25 @@ func merge(left, right []int) (result []int) {
 	}
 	return
 }
+
+func doInstertion(a []int,  c4 chan []int) {
+	insertionsort(a)
+	c4 <- a
+}
+
+func insertionsort(items []int)  {
+	var n = len(items)
+	for i := 1; i < n; i++ {
+		j := i
+		for j > 0 {
+			if items[j-1] > items[j] {
+				items[j-1], items[j] = items[j], items[j-1]
+			}
+			j = j - 1
+		}
+	}
+	
+}
+
 
 
