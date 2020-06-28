@@ -65,80 +65,80 @@ func timeMeasure(t time.Time, functionName string, timeMap map[string]int64) {
 	//fmt.Println(timeMap)
 }
 
-func doQuick(a []int, startTime time.Time, timeMap map[string]int64, c1 chan []int) {
+func doQuick(sortme []int, startTime time.Time, timeMap map[string]int64, c1 chan []int) {
 	// var mutex = &sync.Mutex{}
 	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Quick Sort", timeMap)
 	// mutex.Unlock()
-	quicksort(a)
-	c1 <- a
+	quicksort(sortme)
+	c1 <- sortme
 }
 
-func quicksort(a []int) []int {
+func quicksort(sortme []int) []int {
 
-	if len(a) < 2 {
-		return a
+	if len(sortme) < 2 {
+		return sortme
 	}
 
-	left, right := 0, len(a)-1
+	left, right := 0, len(sortme)-1
 
-	pivot := rand.Int() % len(a)
+	pivot := rand.Int() % len(sortme)
 
-	a[pivot], a[right] = a[right], a[pivot]
+	sortme[pivot], sortme[right] = sortme[right], sortme[pivot]
 
-	for i := range a {
-		if a[i] < a[right] {
-			a[left], a[i] = a[i], a[left]
+	for i := range sortme {
+		if sortme[i] < sortme[right] {
+			sortme[left], sortme[i] = sortme[i], sortme[left]
 			left++
 		}
 	}
 
-	a[left], a[right] = a[right], a[left]
+	sortme[left], sortme[right] = sortme[right], sortme[left]
 
-	quicksort(a[:left])
-	quicksort(a[left+1:])
+	quicksort(sortme[:left])
+	quicksort(sortme[left+1:])
 
-	return a
+	return sortme
 }
 
-func doBubble(a []int, startTime time.Time, timeMap map[string]int64, c2 chan []int) {
+func doBubble(sortme []int, startTime time.Time, timeMap map[string]int64, c2 chan []int) {
 	// var mutex = &sync.Mutex{}
 	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Bubble Sort", timeMap)
 	// mutex.Unlock()
-	bubblesort(a)
-	c2 <- a
+	bubblesort(sortme)
+	c2 <- sortme
 }
 
-func bubblesort(numbers []int) []int {
-	for i := len(numbers); i > 0; i-- {
+func bubblesort(sortme []int) []int {
+	for i := len(sortme); i > 0; i-- {
 		for j := 1; j < i; j++ {
-			if numbers[j-1] > numbers[j] {
-				intermediate := numbers[j]
-				numbers[j] = numbers[j-1]
-				numbers[j-1] = intermediate
+			if sortme[j-1] > sortme[j] {
+				intermediate := sortme[j]
+				sortme[j] = sortme[j-1]
+				sortme[j-1] = intermediate
 			}
 		}
 	}
-	return numbers
+	return sortme
 }
 
-func doMerge(a []int, startTime time.Time, timeMap map[string]int64, c3 chan []int) {
+func doMerge(sortme []int, startTime time.Time, timeMap map[string]int64, c3 chan []int) {
 	// var mutex = &sync.Mutex{}
 	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Merge Sort", timeMap)
 	// mutex.Unlock()
-	mergeSort(a)
-	c3 <- a
+	mergeSort(sortme)
+	c3 <- sortme
 }
 
-func mergeSort(items []int) []int {
+func mergeSort(sortme []int) []int {
 
-	var num = len(items)
+	var num = len(sortme)
 
 	if num == 1 {
 
-		return items
+		return sortme
 	}
 
 	middle := int(num / 2)
@@ -148,9 +148,9 @@ func mergeSort(items []int) []int {
 	)
 	for i := 0; i < num; i++ {
 		if i < middle {
-			left[i] = items[i]
+			left[i] = sortme[i]
 		} else {
-			right[i-middle] = items[i]
+			right[i-middle] = sortme[i]
 		}
 	}
 	var sorted []int = merge(mergeSort(left), mergeSort(right))
@@ -183,22 +183,22 @@ func merge(left, right []int) (result []int) {
 	return
 }
 
-func doInsertion(a []int, startTime time.Time, timeMap map[string]int64, c4 chan []int) {
+func doInsertion(sortme []int, startTime time.Time, timeMap map[string]int64, c4 chan []int) {
 	// var mutex = &sync.Mutex{}
 	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Insertion Sort", timeMap)
 	// mutex.Unlock()
-	insertionSort(a)
-	c4 <- a
+	insertionSort(sortme)
+	c4 <- sortme
 }
 
-func insertionSort(items []int) {
-	var n = len(items)
+func insertionSort(sortme []int) {
+	var n = len(sortme)
 	for i := 1; i < n; i++ {
 		j := i
 		for j > 0 {
-			if items[j-1] > items[j] {
-				items[j-1], items[j] = items[j], items[j-1]
+			if sortme[j-1] > sortme[j] {
+				sortme[j-1], sortme[j] = sortme[j], sortme[j-1]
 			}
 			j = j - 1
 		}
