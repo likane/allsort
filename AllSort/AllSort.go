@@ -10,11 +10,11 @@ import (
 // create a func that will run all goroutines in parallel and return once the first routine is done
 //	todo
 //  func all
-//  func quick
-//  func bubble
+//  func quick --
+//  func bubble --
 //  func binary
-//  func merge
-//  func insertion
+//  func merge --
+//  func insertion --
 //  func selection
 //  func counting
 //  func bogo
@@ -26,11 +26,17 @@ import (
 //  func library
 //
 
-// func all(a []int) ([]int, float64) {
-// 	sortMe(a)
-// }
+/*
+Todo
+1) add more sort functions
+2) test as a module w/o hard coded slice
+3) remove comments
+*/
 
-func All(sortme []int) []int {
+func AllSort(sortme []int) []int {
+	if len(sortme) < 1 {
+		return sortme
+	}
 	c1 := make(chan []int)
 	c2 := make(chan []int)
 	c3 := make(chan []int)
