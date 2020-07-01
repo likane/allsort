@@ -6,32 +6,6 @@ import (
 	"time"
 )
 
-// create goroutines to sort an array or slice
-// create a func that will run all goroutines in parallel and return once the first routine is done
-//	todo
-//  func all
-//  func quick --
-//  func bubble --
-//  func binary
-//  func merge --
-//  func insertion --
-//  func selection
-//  func counting
-//  func bogo
-//  func timsort
-//  func cocktail shaker sort
-//  func bitonic sort
-//  func block
-//  func cubesort
-//  func library
-//
-
-/*
-Todo
-1) add more sort functions
-2) test as a module w/o hard coded slice
-3) remove comments
-*/
 
 func AllSort(sortme []int) []int {
 	if len(sortme) < 1 {
@@ -55,45 +29,25 @@ func AllSort(sortme []int) []int {
 	insertionSorted := <-c4
 
 	if quickSorted != nil {
-		fmt.Println(quickSorted)
-		fmt.Println(timeMap)
-		return quickSorted
+		return quickSorted,timeMap
 	} else if bubbleSorted != nil {
-		fmt.Println(bubbleSorted)
-		fmt.Println(timeMap)
-		return bubbleSorted
+		return bubbleSorted,timeMap
 	} else if mergeSorted != nil {
-		fmt.Println(mergeSorted)
-		fmt.Println(timeMap)
-		return mergeSorted
+		return mergeSorted,timeMap
 	} else if insertionSorted != nil {
-		fmt.Println(insertionSorted)
-		fmt.Println(timeMap)
-		return insertionSorted
+		return insertionSorted,timeMap
 	} else {
-		fmt.Println("Error: Unsorted")
-		fmt.Println(timeMap)
-		return sortme
+		return sortme,timeMap
 	}
 }
 
 func timeMeasure(t time.Time, functionName string, timeMap map[string]int64) {
-	// var mutex = &sync.Mutex{}
-	// mutex.Lock()
 	elapsed := time.Since(t).Nanoseconds()
-	// mutex.Unlock()
 	timeMap[functionName] = elapsed
-
-	//timeMap.Store(functionName, elapsed)
-	//timeMap.Set(functionName, elapsed)
-	//fmt.Println(timeMap)
 }
 
 func doQuick(sortme []int, startTime time.Time, timeMap map[string]int64, c1 chan []int) {
-	// var mutex = &sync.Mutex{}
-	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Quick Sort", timeMap)
-	// mutex.Unlock()
 	quicksort(sortme)
 	c1 <- sortme
 }
@@ -126,10 +80,7 @@ func quicksort(sortme []int) []int {
 }
 
 func doBubble(sortme []int, startTime time.Time, timeMap map[string]int64, c2 chan []int) {
-	// var mutex = &sync.Mutex{}
-	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Bubble Sort", timeMap)
-	// mutex.Unlock()
 	bubblesort(sortme)
 	c2 <- sortme
 }
@@ -148,10 +99,7 @@ func bubblesort(sortme []int) []int {
 }
 
 func doMerge(sortme []int, startTime time.Time, timeMap map[string]int64, c3 chan []int) {
-	// var mutex = &sync.Mutex{}
-	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Merge Sort", timeMap)
-	// mutex.Unlock()
 	mergeSort(sortme)
 	c3 <- sortme
 }
@@ -208,10 +156,7 @@ func merge(left, right []int) (result []int) {
 }
 
 func doInsertion(sortme []int, startTime time.Time, timeMap map[string]int64, c4 chan []int) {
-	// var mutex = &sync.Mutex{}
-	// mutex.Lock()
 	defer timeMeasure(time.Now(), "Insertion Sort", timeMap)
-	// mutex.Unlock()
 	insertionSort(sortme)
 	c4 <- sortme
 }
